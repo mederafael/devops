@@ -20,6 +20,8 @@ pipeline {
           
           echo "${NEXUS_PASSWORD}"
           echo "${NEXUS_USER}"
+
+          sh "docker login -u ${NEXUS_PASSWORD} -p ${NEXUS_USER} localhost:6002"
             // some block
           // docker login localhost:6002
           // docker build -t basa/infra/devel8-alpine:latest .
