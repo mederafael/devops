@@ -17,10 +17,9 @@ pipeline {
       steps {
         echo 'Deploying....'
         withCredentials([usernamePassword(credentialsId: 'admin-nexus', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USER')]) {
-          echo '${NEXUS_PASSWORD}'
-          echo ${NEXUS_PASSWORD}
-          echo '${NEXUS_USER}'
-          echo ${NEXUS_USER}
+          
+          echo "${NEXUS_PASSWORD}"
+          echo "${NEXUS_USER}"
             // some block
           // docker login localhost:6002
           // docker build -t basa/infra/devel8-alpine:latest .
