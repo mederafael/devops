@@ -16,10 +16,17 @@ pipeline {
     stage('Deploy') {
       steps {
         echo 'Deploying....'
-        withCredentials([usernameColonPassword(credentialsId: 'admin-nexus', variable: 'ADMIN-NEXUS')]) {
-          docker version
-          echo $ADMIN-NEXUS
+        withCredentials([usernamePassword(credentialsId: 'admin-nexus', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USER')]) {
+          echo ${NEXUS_PASSWORD}
+          echo ${NEXUS_USER}
+            // some block
+          docker login -u ${NEXUS_USER} -p ${NEXUS_PASSWORD} localhost:6002
+          docker build -t basa/infra/devel8-alpine:latest .
+          docker push basa/infra/devel8-alpine:latest
         }
+        
+          
+        
       }
     }
 
