@@ -9,7 +9,11 @@ pipeline {
 
     stage('Test') {
       steps {
-        echo 'Testing..'
+        echo 'Testing.. DOKCER'
+        sh "docker version"
+        sh "docker images"
+        sh "docker ps -a"
+        sh "docker ps"
       }
     }
 
