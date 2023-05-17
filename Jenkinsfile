@@ -16,6 +16,10 @@ pipeline {
     stage('Deploy') {
       steps {
         echo 'Deploying....'
+        sh "docker version"
+        sh "docker images"
+        sh "docker ps -a"
+        sh "docker ps"
         withCredentials([usernamePassword(credentialsId: 'admin-nexus', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USER')]) {
           
           echo "${NEXUS_PASSWORD}"
