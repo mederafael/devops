@@ -25,11 +25,9 @@ pipeline {
         sh "docker ps -a"
         sh "docker ps"
         withCredentials([usernamePassword(credentialsId: 'nexus', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USER')]) {
-          
-          echo "${NEXUS_PASSWORD}"
-          echo "${NEXUS_USER}"
-
-          sh "docker login -u admin -p 123456789 localhost:6002"
+          echo "NEXUS_USER: ${NEXUS_USER}"
+          echo "NEXUS_PASSWORD: ${NEXUS_PASSWORD}"
+          sh "docker login -u ${NEXUS_USER} -p ${NEXUS_PASSWORD} localhost:6002"
             // some block
           // docker login localhost:6002
           // docker build -t basa/infra/devel8-alpine:latest .
