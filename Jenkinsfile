@@ -24,7 +24,7 @@ pipeline {
         sh "docker images"
         sh "docker ps -a"
         sh "docker ps"
-        withCredentials([usernamePassword(credentialsId: 'admin-nexus', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USER')]) {
+        withCredentials([usernamePassword(credentialsId: 'nexus', passwordVariable: 'NEXUS_PASSWORD', usernameVariable: 'NEXUS_USER')]) {
           
           echo "${NEXUS_PASSWORD}"
           echo "${NEXUS_USER}"
