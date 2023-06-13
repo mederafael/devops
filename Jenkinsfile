@@ -1,13 +1,10 @@
 pipeline {
   agent any
-  node('docker'){
-    stages {
+  stages {
     stage('Build') {
       steps {
         echo 'docker info'
       }
     }
   }
-  }
-  
 }
