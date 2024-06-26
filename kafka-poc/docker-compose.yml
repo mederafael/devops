@@ -1,0 +1,108 @@
+version: '3.8'
+
+x-common-zookeeper-setup: &common-zookeeper-setup
+  build:
+    context: .
+    dockerfile: Dockerfile.zookeeper
+    args:
+      ZOOKEEPER_GID: ${ZOOKEEPER_GID}
+      ZOOKEEPER_UID: ${ZOOKEEPER_UID}
+      ZOOKEEPER_USER: ${ZOOKEEPER_USER}
+  environment:
+    ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
+    ZOOKEEPER_TICK_TIME: ${ZOOKEEPER_TICK_TIME}
+    ZOOKEEPER_INIT_LIMIT: ${ZOOKEEPER_INIT_LIMIT}
+    ZOOKEEPER_SYNC_LIMIT: ${ZOOKEEPER_SYNC_LIMIT}
+    ZOOKEEPER_AUTOPURGE_SNAP_RETAIN_COUNT: ${ZOOKEEPER_AUTOPURGE_SNAP_RETAIN_COUNT}
+    ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: ${ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL}
+    ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
+  volumes:
+    - zookeeper_data:/var/lib/zookeeper
+  networks:
+    - kafka_network
+  healthcheck:
+    test: ["CMD", "zkServer.sh", "status"]
+    interval: 30s
+    timeout: 10s
+    retries: 5
+    start_period: 40s
+
+x-common-kafka-setup: &common-kafka-setup
+  build:
+    context: .
+    dockerfile: Dockerfile.kafka
+    args:
+      KAFKA_GID: ${KAFKA_GID}
+      KAFKA_UID: ${KAFKA_UID}
+      KAFKA_USER: ${KAFKA_USER}
+  environment:
+    KAFKA_ZOOKEEPER_CONNECT: ${ZOOKEEPER_SERVERS}
+    KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: ${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
+    KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: ${KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR}
+    KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: ${KAFKA_TRANSACTION_STATE_LOG_MIN_ISR}
+    KAFKA_LOG_RETENTION_HOURS: ${KAFKA_LOG_RETENTION_HOURS}
+    KAFKA_LOG_RETENTION_BYTES: ${KAFKA_LOG_RETENTION_BYTES}
+    KAFKA_LOG_SEGMENT_BYTES: ${KAFKA_LOG_SEGMENT_BYTES}
+    KAFKA_NUM_PARTITIONS: ${KAFKA_NUM_PARTITIONS}
+  volumes:
+    - kafka_data:/var/lib/kafka
+    - ./scripts/create_topics.sh:/usr/bin/create_topics.sh
+  networks:
+    - kafka_network
+  healthcheck:
+    test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+    interval: 30s
+    timeout: 10s
+    retries: 5
+    start_period: 40s
+
+services:
+  zookeeper1:
+    <<: *common-zookeeper-setup
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
+
+  zookeeper2:
+    <<: *common-zookeeper-setup
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
+
+  zookeeper3:
+    <<: *common-zookeeper-setup
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
+
+  kafka1:
+    <<: *common-kafka-setup
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
+
+  kafka2:
+    <<: *common-kafka-setup
+    ports:
+      - 9093:9092
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9093
+
+  kafka3:
+    <<: *common-kafka-setup
+    ports:
+      - 9094:9092
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9094
+
+volumes:
+  kafka_data:
+  zookeeper_data:
+
+networks:
+  kafka_network:
+    driver: bridge

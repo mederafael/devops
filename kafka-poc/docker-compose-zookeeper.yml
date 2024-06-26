@@ -1,0 +1,43 @@
+version: '3.8'
+
+x-common-zookeeper-setup: &common-zookeeper-setup
+  build:
+    context: .
+    dockerfile: Dockerfile.zookeeper
+    args:
+      ZOOKEEPER_GID: ${ZOOKEEPER_GID}
+      ZOOKEEPER_UID: ${ZOOKEEPER_UID}
+      ZOOKEEPER_USER: ${ZOOKEEPER_USER}
+  environment:
+    ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
+    ZOOKEEPER_TICK_TIME: ${ZOOKEEPER_TICK_TIME}
+    ZOOKEEPER_INIT_LIMIT: ${ZOOKEEPER_INIT_LIMIT}
+    ZOOKEEPER_SYNC_LIMIT: ${ZOOKEEPER_SYNC_LIMIT}
+    ZOOKEEPER_AUTOPURGE_SNAP_RETAIN_COUNT: ${ZOOKEEPER_AUTOPURGE_SNAP_RETAIN_COUNT}
+    ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: ${ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL}
+    ZOOKEEPER_SERVERS: ${ZOOKEEPER_SERVERS}
+  volumes:
+    - zookeeper_data:/var/lib/zookeeper
+  networks:
+    - kafka_network
+  healthcheck:
+    test: ["CMD", "zkServer.sh", "status"]
+    interval: 30s
+    timeout: 10s
+    retries: 5
+    start_period: 40s
+
+services:
+  zookeeper1:
+    <<: *common-zookeeper-setup
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: ${ZOOKEEPER_CLIENT_PORT}
+
+
+volumes:
+  zookeeper_data:
+
+networks:
+  kafka_network:
+    driver: bridge
