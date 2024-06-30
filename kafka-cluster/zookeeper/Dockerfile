@@ -46,6 +46,5 @@ COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-
 # Define o comando padrão
-CMD ["zkServer.sh", "start-foreground"]
+# CMD ["zkServer.sh", "start-foreground"]

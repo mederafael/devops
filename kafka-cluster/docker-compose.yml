@@ -20,12 +20,18 @@ services:
       - ZOO_SERVER3=server.3=${ZOOKEEPER_HOST_3}:2888:3888
     volumes:
       - zookeeper1_data:/var/lib/zookeeper
-      - zookeeper1_datalog:/datalog
+      - /zookeeper/log4j.properties:/opt/zookeeper/conf/log4j.properties
+      - zookeeper1_logs:/var/log/zookeeper
     healthcheck:
-      test: ["CMD", "nc", "-z", "${ZOOKEEPER_HOST_1}", "2181"]
+      test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181"]
       interval: 10s
       timeout: 5s
       retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     extra_hosts:
       - "${ZOOKEEPER_HOST_2}:${ZOOKEEPER_IP_2}"
       - "${ZOOKEEPER_HOST_3}:${ZOOKEEPER_IP_3}"
@@ -49,12 +55,18 @@ services:
       - ZOO_SERVER3=server.3=${ZOOKEEPER_HOST_3}:2888:3888
     volumes:
       - zookeeper2_data:/var/lib/zookeeper
-      - zookeeper2_datalog:/datalog
+      - /zookeeper/log4j.properties:/opt/zookeeper/conf/log4j.properties
+      - zookeeper2_logs:/var/log/zookeeper
     healthcheck:
-      test: ["CMD", "nc", "-z", "${ZOOKEEPER_HOST_2}", "2181"]
+      test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181"]
       interval: 10s
       timeout: 5s
       retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"      
     extra_hosts:
       - "${ZOOKEEPER_HOST_1}:${ZOOKEEPER_IP_1}"
       - "${ZOOKEEPER_HOST_3}:${ZOOKEEPER_IP_3}"
@@ -78,12 +90,18 @@ services:
       - ZOO_SERVER3=server.3=${ZOOKEEPER_HOST_3}:2888:3888
     volumes:
       - zookeeper3_data:/var/lib/zookeeper
-      - zookeeper3_datalog:/datalog
+      - /zookeeper/log4j.properties:/opt/zookeeper/conf/log4j.properties
+      - zookeeper3_logs:/var/log/zookeeper
     healthcheck:
-      test: ["CMD", "nc", "-z", "${ZOOKEEPER_HOST_3}", "2181"]
+      test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181"]
       interval: 10s
       timeout: 5s
       retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"      
     extra_hosts:
       - "${ZOOKEEPER_HOST_1}:${ZOOKEEPER_IP_1}"
       - "${ZOOKEEPER_HOST_2}:${ZOOKEEPER_IP_2}"
@@ -96,10 +114,9 @@ networks:
         - subnet: 172.19.0.0/16
 
 volumes:
-  zookeeper1_data: {}
-  zookeeper1_datalog: {}
+  zookeeper1_data: {}  
   zookeeper2_data: {}
-  zookeeper2_datalog: {}
   zookeeper3_data: {}
-  zookeeper3_datalog: {}
-
+  zookeeper1_logs: {}
+  zookeeper2_logs: {}
+  zookeeper3_logs: {}
