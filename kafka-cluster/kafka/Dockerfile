@@ -33,10 +33,7 @@ EXPOSE 9092
 
 # Copia os scripts de inicialização
 COPY docker-entrypoint.sh /usr/local/bin/
-#COPY kafka-init.sh /usr/local/bin/ /usr/local/bin/kafka-init.sh  /usr/local/bin/kafka-init.sh
-COPY server.properties /opt/kafka/config/server.properties
-COPY fix-permissions.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/fix-permissions.sh \
-    && chown kafka:kafka /usr/local/bin/docker-entrypoint.sh /opt/kafka/config/server.properties
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
+    && chown kafka:kafka /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

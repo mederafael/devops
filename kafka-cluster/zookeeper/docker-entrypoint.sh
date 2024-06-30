@@ -24,20 +24,20 @@ cat /opt/zookeeper/conf/zoo.cfg
 mkdir -p /tmp/zookeeper
 echo ${ZOO_MY_ID} > /tmp/zookeeper/myid
 
-while ! ping -c 1 "zookeeper1"; do
-  echo "Waiting for the host to be reachable..."
-  sleep 5
-done
-
-while ! ping -c 1 "zookeeper2"; do
-  echo "Waiting for the host to be reachable..."
-  sleep 5
-done
-
 while ! ping -c 1 "zookeeper3"; do
   echo "Waiting for the host to be reachable..."
-  sleep 5
+   sleep 5
 done
+
+ while ! ping -c 1 "zookeeper2"; do
+   echo "Waiting for the host to be reachable..."
+   sleep 5
+ done
+
+ while ! ping -c 1 "zookeeper1"; do
+   echo "Waiting for the host to be reachable..."
+   sleep 5
+ done
 
 # Executa o ZooKeeper padrão
 exec zkServer.sh start-foreground

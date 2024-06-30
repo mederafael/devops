@@ -105,6 +105,123 @@ services:
     extra_hosts:
       - "${ZOOKEEPER_HOST_1}:${ZOOKEEPER_IP_1}"
       - "${ZOOKEEPER_HOST_2}:${ZOOKEEPER_IP_2}"
+  
+  kafka1:
+    build:
+      context: ./kafka
+      dockerfile: Dockerfile
+    hostname: ${KAFKA_HOST_1}
+    container_name: kafka1
+    ports:
+      - ${KAFKA_PORT_1}:9092
+    networks:
+      kafka_network:
+        ipv4_address: ${KAFKA_IP_1}
+    depends_on:
+      zookeeper1:
+        condition: service_healthy
+      zookeeper2:
+        condition: service_healthy
+      zookeeper3:
+        condition: service_healthy
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=${ZOOKEEPER_HOST_1}:${ZOOKEEPER_PORT_1},${ZOOKEEPER_HOST_2}:${ZOOKEEPER_PORT_2},${ZOOKEEPER_HOST_3}:${ZOOKEEPER_PORT_3}
+      - KAFKA_LISTENERS=PLAINTEXT://${KAFKA_HOST_1}:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST_1}:${KAFKA_PORT_1}
+      - KAFKA_LOG_DIRS=/var/lib/kafka/data
+      - KAFKA_BROKER_HOST_NAME=${KAFKA_HOST_1}:9092
+    volumes:
+      - kafka1_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "nc", "-z", "${KAFKA_HOST_1}", "9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    extra_hosts:
+      - "${ZOOKEEPER_HOST_1}:${ZOOKEEPER_IP_1}"
+      - "${ZOOKEEPER_HOST_2}:${ZOOKEEPER_IP_2}"
+      - "${ZOOKEEPER_HOST_3}:${ZOOKEEPER_IP_3}"
+      - "${KAFKA_HOST_2}:${KAFKA_IP_2}"
+      - "${KAFKA_HOST_3}:${KAFKA_IP_3}"
+  
+  kafka2:
+    build:
+      context: ./kafka
+      dockerfile: Dockerfile
+    hostname: ${KAFKA_HOST_2}
+    container_name: kafka2
+    ports:
+      - ${KAFKA_PORT_2}:9092
+    networks:
+      kafka_network:
+        ipv4_address: ${KAFKA_IP_2}
+    depends_on:
+      zookeeper1:
+        condition: service_healthy
+      zookeeper2:
+        condition: service_healthy
+      zookeeper3:
+        condition: service_healthy
+    environment:
+      - KAFKA_BROKER_ID=2
+      - KAFKA_ZOOKEEPER_CONNECT=${ZOOKEEPER_HOST_1}:${ZOOKEEPER_PORT_1},${ZOOKEEPER_HOST_2}:${ZOOKEEPER_PORT_2},${ZOOKEEPER_HOST_3}:${ZOOKEEPER_PORT_3}
+      - KAFKA_LISTENERS=PLAINTEXT://${KAFKA_HOST_2}:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST_2}:${KAFKA_PORT_2}
+      - KAFKA_LOG_DIRS=/var/lib/kafka/data
+      - KAFKA_BROKER_HOST_NAME=${KAFKA_HOST_2}:9092
+    volumes:
+      - kafka2_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "nc", "-z", "${KAFKA_HOST_2}", "9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    extra_hosts:
+      - "${ZOOKEEPER_HOST_1}:${ZOOKEEPER_IP_1}"
+      - "${ZOOKEEPER_HOST_2}:${ZOOKEEPER_IP_2}"
+      - "${ZOOKEEPER_HOST_3}:${ZOOKEEPER_IP_3}"
+      - "${KAFKA_HOST_1}:${KAFKA_IP_1}"
+      - "${KAFKA_HOST_3}:${KAFKA_IP_3}"
+
+  kafka3:
+    build:
+      context: ./kafka
+      dockerfile: Dockerfile
+    hostname: ${KAFKA_HOST_3}
+    container_name: kafka3
+    ports:
+      - ${KAFKA_PORT_3}:9092
+    networks:
+      kafka_network:
+        ipv4_address: ${KAFKA_IP_3}
+    depends_on:
+      zookeeper1:
+        condition: service_healthy
+      zookeeper2:
+        condition: service_healthy
+      zookeeper3:
+        condition: service_healthy
+    environment:
+      - KAFKA_BROKER_ID=3
+      - KAFKA_ZOOKEEPER_CONNECT=${ZOOKEEPER_HOST_1}:${ZOOKEEPER_PORT_1},${ZOOKEEPER_HOST_2}:${ZOOKEEPER_PORT_2},${ZOOKEEPER_HOST_3}:${ZOOKEEPER_PORT_3}
+      - KAFKA_LISTENERS=PLAINTEXT://${KAFKA_HOST_3}:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST_3}:${KAFKA_PORT_3}
+      - KAFKA_LOG_DIRS=/var/lib/kafka/data
+      - KAFKA_BROKER_HOST_NAME=${KAFKA_HOST_3}:9092
+    volumes:
+      - kafka3_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "nc", "-z", "${KAFKA_HOST_3}", "9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    extra_hosts:
+      - "${ZOOKEEPER_HOST_1}:${ZOOKEEPER_IP_1}"
+      - "${ZOOKEEPER_HOST_2}:${ZOOKEEPER_IP_2}"
+      - "${ZOOKEEPER_HOST_3}:${ZOOKEEPER_IP_3}"
+      - "${KAFKA_HOST_1}:${KAFKA_IP_1}"
+      - "${KAFKA_HOST_2}:${KAFKA_IP_2}"
 
 networks:
   kafka_network:
@@ -120,3 +237,6 @@ volumes:
   zookeeper1_logs: {}
   zookeeper2_logs: {}
   zookeeper3_logs: {}
+  kafka1_data: {}
+  kafka2_data: {}
+  kafka3_data: {}
