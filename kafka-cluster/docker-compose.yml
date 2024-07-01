@@ -19,9 +19,9 @@ services:
       - ZOO_SERVER2=server.2=${ZOOKEEPER_HOST_2}:2888:3888
       - ZOO_SERVER3=server.3=${ZOOKEEPER_HOST_3}:2888:3888
     volumes:
-      - zookeeper1_data:/var/lib/zookeeper
+      - zookeeper1_data:${ZOOKEEPER_DATA}
+      - zookeeper1_logs:${ZOOKEEPER_LOGS}
       - /zookeeper/log4j.properties:/opt/zookeeper/conf/log4j.properties
-      - zookeeper1_logs:/var/log/zookeeper
     healthcheck:
       test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181"]
       interval: 10s
@@ -54,9 +54,9 @@ services:
       - ZOO_SERVER2=server.2=${ZOOKEEPER_HOST_2}:2888:3888
       - ZOO_SERVER3=server.3=${ZOOKEEPER_HOST_3}:2888:3888
     volumes:
-      - zookeeper2_data:/var/lib/zookeeper
+      - zookeeper2_data:${ZOOKEEPER_DATA}
+      - zookeeper2_logs:${ZOOKEEPER_LOGS}
       - /zookeeper/log4j.properties:/opt/zookeeper/conf/log4j.properties
-      - zookeeper2_logs:/var/log/zookeeper
     healthcheck:
       test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181"]
       interval: 10s
@@ -89,9 +89,9 @@ services:
       - ZOO_SERVER2=server.2=${ZOOKEEPER_HOST_2}:2888:3888
       - ZOO_SERVER3=server.3=${ZOOKEEPER_HOST_3}:2888:3888
     volumes:
-      - zookeeper3_data:/var/lib/zookeeper
+      - zookeeper3_data:${ZOOKEEPER_DATA}
+      - zookeeper3_logs:${ZOOKEEPER_LOGS}
       - /zookeeper/log4j.properties:/opt/zookeeper/conf/log4j.properties
-      - zookeeper3_logs:/var/log/zookeeper
     healthcheck:
       test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181"]
       interval: 10s
@@ -129,10 +129,11 @@ services:
       - KAFKA_ZOOKEEPER_CONNECT=${ZOOKEEPER_HOST_1}:${ZOOKEEPER_PORT_1},${ZOOKEEPER_HOST_2}:${ZOOKEEPER_PORT_2},${ZOOKEEPER_HOST_3}:${ZOOKEEPER_PORT_3}
       - KAFKA_LISTENERS=PLAINTEXT://${KAFKA_HOST_1}:9092
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST_1}:9092
-      - KAFKA_LOG_DIRS=/var/lib/kafka/data
+      - KAFKA_LOG_DIRS=${KAFKA_LOG_DIRS}
       - KAFKA_BROKER_HOST_NAME=${KAFKA_HOST_1}:9092
     volumes:
-      - kafka1_data:/var/lib/kafka/data
+      - kafka1_data:${KAFKA_DATA}
+      - kafka1_logs:${KAFKA_LOG_DIRS}
     healthcheck:
       test: ["CMD", "nc", "-z", "${KAFKA_HOST_1}", "9092"]
       interval: 10s
@@ -168,10 +169,11 @@ services:
       - KAFKA_ZOOKEEPER_CONNECT=${ZOOKEEPER_HOST_1}:${ZOOKEEPER_PORT_1},${ZOOKEEPER_HOST_2}:${ZOOKEEPER_PORT_2},${ZOOKEEPER_HOST_3}:${ZOOKEEPER_PORT_3}
       - KAFKA_LISTENERS=PLAINTEXT://${KAFKA_HOST_2}:9092
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST_2}:9092
-      - KAFKA_LOG_DIRS=/var/lib/kafka/data
+      - KAFKA_LOG_DIRS=${KAFKA_LOG_DIRS}
       - KAFKA_BROKER_HOST_NAME=${KAFKA_HOST_2}:9092
     volumes:
-      - kafka2_data:/var/lib/kafka/data
+      - kafka2_data:${KAFKA_DATA}
+      - kafka2_logs:${KAFKA_LOG_DIRS}
     healthcheck:
       test: ["CMD", "nc", "-z", "${KAFKA_HOST_2}", "9092"]
       interval: 10s
@@ -207,10 +209,11 @@ services:
       - KAFKA_ZOOKEEPER_CONNECT=${ZOOKEEPER_HOST_1}:${ZOOKEEPER_PORT_1},${ZOOKEEPER_HOST_2}:${ZOOKEEPER_PORT_2},${ZOOKEEPER_HOST_3}:${ZOOKEEPER_PORT_3}
       - KAFKA_LISTENERS=PLAINTEXT://${KAFKA_HOST_3}:9092
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_HOST_3}:9092
-      - KAFKA_LOG_DIRS=/var/lib/kafka/data
+      - KAFKA_LOG_DIRS=${KAFKA_LOG_DIRS}
       - KAFKA_BROKER_HOST_NAME=${KAFKA_HOST_3}:9092
     volumes:
-      - kafka3_data:/var/lib/kafka/data
+      - kafka3_data:${KAFKA_DATA}
+      - kafka3_logs:${KAFKA_LOG_DIRS}
     healthcheck:
       test: ["CMD", "nc", "-z", "${KAFKA_HOST_3}", "9092"]
       interval: 10s
@@ -231,12 +234,15 @@ networks:
         - subnet: 172.19.0.0/16
 
 volumes:
-  zookeeper1_data: {}  
-  zookeeper2_data: {}
-  zookeeper3_data: {}
+  zookeeper1_data: {}
   zookeeper1_logs: {}
+  zookeeper2_data: {}
   zookeeper2_logs: {}
+  zookeeper3_data: {}
   zookeeper3_logs: {}
   kafka1_data: {}
+  kafka1_logs: {}
   kafka2_data: {}
+  kafka2_logs: {}
   kafka3_data: {}
+  kafka3_logs: {}
