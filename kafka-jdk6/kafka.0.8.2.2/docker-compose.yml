@@ -1,0 +1,21 @@
+# docker-compose.yml
+services:
+  zookeeper1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    hostname: kafka
+    container_name: kafkaZookeeper
+    ports:
+      - 2181:2181
+      - 9092:9092
+    healthcheck:
+      test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -1,0 +1,16 @@
+version: '3'
+services:
+  flask_app:
+    build: .
+    ports:
+      - "5000:5000"
+    networks:
+      my_custom_network:
+        ipv4_address: 192.168.167.10
+
+networks:
+  my_custom_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.160.0/20

@@ -44,7 +44,5 @@ EXPOSE 2181
 # Define o comando de inicialização
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-ENTRYPOINT ["docker-entrypoint.sh"]
 
-# Define o comando padrão
-# CMD ["zkServer.sh", "start-foreground"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
