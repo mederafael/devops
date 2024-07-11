@@ -46,8 +46,14 @@ RUN mkdir -p ${JAVA_HOME} && \
 #Executando o script de teste e mantendo o contêiner em execução
 #CMD /usr/local/bin/test-ambiente.sh && supervisord -c /etc/supervisor/supervisord.conf
 
-CMD /opt/kafka/bin/zookeeper-server-start.sh /opt/kafka/config/zookeeper.properties & \
-/opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties
+# Copiar o script para o contêiner
+COPY start-kafka.sh /usr/bin/start-kafka.sh
+
+# Tornar o script executável
+RUN chmod +x /usr/bin/start-kafka.sh
+
+# Definir o comando CMD para usar o script de inicialização
+CMD ["/usr/bin/start-kafka.sh"]
 
 # Expondo as portas necessárias
 EXPOSE 9092 2181

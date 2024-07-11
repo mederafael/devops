@@ -5,7 +5,7 @@ import org.I0Itec.zkclient.ZkClient;
 import java.util.Properties;
 
 public class BasaKafkaTopicCreator {
-    private static final String ZK_CONNECT = "localhost:2181";
+    private static final String ZK_CONNECT = "zookeeper:2181";
     private static final int SESSION_TIMEOUT = 10000;
     private static final int CONNECTION_TIMEOUT = 10000;
 
@@ -16,6 +16,6 @@ public class BasaKafkaTopicCreator {
     }
 
     public static void main(String[] args) {
-        createTopic("topico-rafael-3", 1, 1);
+        createTopic("topico-rafael-5", 1, 1);
     }
 }

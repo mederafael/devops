@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
     hostname: kafka
     container_name: kafkaZookeeper
+    networks:
+      - kafka_network    
     ports:
       - 2181:2181
       - 9092:9092
@@ -19,3 +21,10 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+networks:
+  kafka_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.2.0/24
+          gateway: 192.168.2.1

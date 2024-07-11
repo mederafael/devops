@@ -40,9 +40,9 @@ public class BasaKafkaConsumer {
     }
 
     public static void main(String[] args) {
-        String zookeeper = "localhost:2181";
-        String groupId = "test-group";
-        String topic = "topico-rafael-3";
+        String zookeeper = "zookeeper:2181";
+        String groupId = "test-consumer-group";
+        String topic = "topico-rafael-4";
         BasaKafkaConsumer simpleConsumer = new BasaKafkaConsumer(zookeeper, groupId, topic);
         simpleConsumer.consume();
     }

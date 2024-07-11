@@ -1,0 +1,32 @@
+services:
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    user: root
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: 1
+      KAFKA_BROKER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181      
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    command: ["/bin/sh", "-c", "/usr/bin/create-topics.sh & /etc/confluent/docker/run"]
+    hostname: kafka
+    networks:
+      kafka_network:
+        ipv4_address: 192.168.2.2
+    extra_hosts:
+      - "zookeeper:192.168.2.3"
+networks:
+  kafka_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.2.0/24
+          gateway: 192.168.2.1
